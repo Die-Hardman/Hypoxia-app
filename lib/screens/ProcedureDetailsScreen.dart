@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../models/Procedure.dart';
 import 'package:intl/intl.dart'; // Для форматування дати
+import 'package:google_fonts/google_fonts.dart';
 
 class ProcedureDetailsScreen extends StatelessWidget {
   final Procedure procedure;
@@ -24,8 +25,12 @@ class ProcedureDetailsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Деталі Процедури'),
-        backgroundColor: Colors.teal,
+        title: Text('Деталі Процедури',
+          style: GoogleFonts.lato(
+          fontSize: 24,
+          color: Colors.white,
+        ),),
+        backgroundColor: Color(0xFF2F2FAF),
       ),
       body: SingleChildScrollView(
         child: Padding(

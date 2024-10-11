@@ -24,7 +24,7 @@ class AddChoiceScreen extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => AddPatientScreen()),
                 );
               }),
-              _buildChoiceButton(context, 'Додати процедуру', Icons.add_chart, Colors.green, () {
+              _buildChoiceButton(context, 'Додати процедуру', Icons.add_chart, Colors.blue, () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => AddProcedureScreen()),

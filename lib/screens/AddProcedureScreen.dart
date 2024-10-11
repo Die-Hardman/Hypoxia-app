@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Для форматування дати
 import '../models/Procedure.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AddProcedureScreen extends StatefulWidget {
   @override
@@ -23,8 +24,12 @@ class _AddProcedureScreenState extends State<AddProcedureScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Додати Процедуру'),
-        backgroundColor: Colors.teal,
+        title: Text('Додати Процедуру',
+          style: GoogleFonts.lato(
+          fontSize: 24,
+          color: Colors.white,
+        ),),
+          backgroundColor: Color(0xFF2F2FAF),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

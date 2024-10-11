@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/Patient.dart';
 import '../models/Procedure.dart';
 import 'ProcedureDetailsScreen.dart'; // Importing the procedure details screen
+import 'package:google_fonts/google_fonts.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -76,8 +77,12 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Пошук'),
-        backgroundColor: Colors.teal,
+        title: Text('Пошук',
+          style: GoogleFonts.lato(
+          fontSize: 24,
+          color: Colors.white,
+        ),),
+        backgroundColor: Color(0xFF2F2FAF),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
