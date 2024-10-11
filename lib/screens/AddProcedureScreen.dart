@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Для форматування дати
 import '../models/Procedure.dart';
 
 class AddProcedureScreen extends StatefulWidget {
@@ -15,6 +16,8 @@ class _AddProcedureScreenState extends State<AddProcedureScreen> {
   final List<TextEditingController> _respirationRateControllers = List.generate(12, (_) => TextEditingController());
   final List<TextEditingController> _oxygenConcentrationControllers = List.generate(12, (_) => TextEditingController());
   final List<TextEditingController> _co2Controllers = List.generate(12, (_) => TextEditingController());
+
+  DateTime? _selectedDate; // Змінна для дати процедури
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +47,24 @@ class _AddProcedureScreenState extends State<AddProcedureScreen> {
             TextField(
               controller: _doctorNameController,
               decoration: InputDecoration(hintText: 'Введіть ім\'я лікаря'),
+            ),
+            SizedBox(height: 16),
+            Text('Дата Процедури:', style: TextStyle(fontSize: 16)),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    _selectedDate == null
+                        ? 'Виберіть дату'
+                        : DateFormat('yyyy-MM-dd').format(_selectedDate!), // Форматування дати
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.calendar_today),
+                  onPressed: _selectDate,
+                ),
+              ],
             ),
             SizedBox(height: 16),
             Text('Дані по процедурі (кожні 10 хв):', style: TextStyle(fontSize: 16)),
@@ -80,6 +101,20 @@ class _AddProcedureScreenState extends State<AddProcedureScreen> {
     );
   }
 
+  Future<void> _selectDate() async {
+    DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
+
   void _saveProcedure() {
     // Отримання даних з контролерів
     String patientName = _patientNameController.text;
@@ -92,17 +127,24 @@ class _AddProcedureScreenState extends State<AddProcedureScreen> {
     List<double?> oxygenConcentrations = _oxygenConcentrationControllers.map((controller) => double.tryParse(controller.text)).toList();
     List<double?> co2Concentrations = _co2Controllers.map((controller) => double.tryParse(controller.text)).toList();
 
+    // Перевірка, чи вибрана дата
+    if (_selectedDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Будь ласка, виберіть дату процедури.')));
+      return;
+    }
+
     // Створення нового об'єкта процедури
-    Procedure(
-      procedureName: 'Тест на дихання',
-      patientName: 'John Doe',
-      doctorName: 'Др. Сміт', // Додано ім'я лікаря
-      time: '12:00 PM',
-      heartRate: [70], // Передаємо список значень пульсу
-      spo2: [98.0], // Передаємо список значень SpO2
-      respirationRate: [16], // Передаємо список значень дихальної частоти
-      oxygenConcentration: [95.0], // Передаємо список значень кисню
-      carbonDioxideConcentration: [5.0], // Передаємо список значень CO2
+    Procedure newProcedure = Procedure(
+      procedureName: procedureName,
+      patientName: patientName,
+      doctorName: doctorName,
+      procedureDate: _selectedDate!, // Передаємо вибрану дату
+      time: '12:00 PM', // Час можна додати пізніше або налаштувати окремо
+      heartRate: heartRates.cast<int>(), // Перетворюємо nullable List на List<int>
+      spo2: spo2.cast<double>(),
+      respirationRate: respirationRates.cast<int>(),
+      oxygenConcentration: oxygenConcentrations.cast<double>(),
+      carbonDioxideConcentration: co2Concentrations.cast<double>(),
     );
 
     // Збережіть нову процедуру (додайте код для збереження в базі даних або в пам'яті)

@@ -34,12 +34,14 @@ class _SearchScreenState extends State<SearchScreen> {
     Procedure(
       procedureName: 'Тест на дихання',
       patientName: 'John Doe',
+      procedureDate: DateTime.now(), // Оновлене поле
       time: '12:00 PM',
-      heartRate: [70, 75, 72], // Assuming heartRate is a List<int?>
-      spo2: [98.0, 97.5, 98.2], // Assuming spo2 is a List<double?>
-      respirationRate: [16, 15, 14], // Assuming respirationRate is a List<int?>
-      oxygenConcentration: [95.0, 94.0, 96.0], // Assuming oxygenConcentration is a List<double?>
-      carbonDioxideConcentration: [5.0, 4.5, 5.2], doctorName: '', // Assuming carbonDioxideConcentration is a List<double?>
+      heartRate: [70, 75, 72], // Список значень пульсу
+      spo2: [98.0, 97.5, 98.2], // Список значень SpO2
+      respirationRate: [16, 15, 14], // Список значень дихальної частоти
+      oxygenConcentration: [95.0, 94.0, 96.0], // Список значень концентрації кисню
+      carbonDioxideConcentration: [5.0, 4.5, 5.2], // Список значень концентрації CO2
+      doctorName: 'Dr. Smith',
     ),
     // Add other procedures as needed
   ];
@@ -111,13 +113,15 @@ class _SearchScreenState extends State<SearchScreen> {
                     return ListTile(
                       leading: Icon(Icons.medical_services),
                       title: Text(procedure.procedureName),
-                      subtitle: Text('Пацієнт: ${procedure.patientName}'),
+                      subtitle: Text(
+                          'Пацієнт: ${procedure.patientName}, Дата: ${procedure.procedureDate.toLocal().toString().split(' ')[0]}'),
                       onTap: () {
                         // Open procedure details screen
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ProcedureDetailsScreen(procedure: procedure),
+                            builder: (context) =>
+                                ProcedureDetailsScreen(procedure: procedure),
                           ),
                         );
                       },

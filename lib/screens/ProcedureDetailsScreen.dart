@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../models/Procedure.dart';
+import 'package:intl/intl.dart'; // Для форматування дати
 
 class ProcedureDetailsScreen extends StatelessWidget {
   final Procedure procedure;
@@ -17,6 +18,9 @@ class ProcedureDetailsScreen extends StatelessWidget {
     final List<int?> respirationRates = [16, 17, 18, 17, 16, 17, 18, 19, 20, 19, 18, 19, 20, 21, 20, 19, 18];
     final List<double?> oxygenConcentrations = [95.0, 94.8, 94.5, 94.3, 94.0, 93.8, 93.6, 93.4, 93.2, 93.0, 92.8, 92.5, 92.3, 92.0, 91.8, 91.5, 91.3];
     final List<double?> co2Concentrations = [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9, 6.0, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6];
+
+    // Форматування дати
+    String formattedDate = DateFormat('dd.MM.yyyy').format(procedure.procedureDate);
 
     return Scaffold(
       appBar: AppBar(
@@ -35,7 +39,12 @@ class ProcedureDetailsScreen extends StatelessWidget {
               ),
               SizedBox(height: 8),
               Text(
-                'Лікар: ${procedure.doctorName}', // Додано лікаря
+                'Лікар: ${procedure.doctorName}',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Дата процедури: $formattedDate', // Дата процедури
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 16),

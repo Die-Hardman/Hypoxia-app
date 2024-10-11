@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // Для кастомних шрифтів
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart'; // Для форматування дати
 
 import '../models/Patient.dart';
 import '../models/Procedure.dart';
 import 'SearchScreen.dart';
-import 'PatientDetailsScreen.dart'; // Екран деталей пацієнта
-import 'ProcedureDetailsScreen.dart'; // Екран деталей процедури
-import 'AddChoiceScreen.dart'; // Екран вибору додавання
+import 'PatientDetailsScreen.dart';
+import 'ProcedureDetailsScreen.dart';
+import 'AddChoiceScreen.dart';
 
 class MainScreen extends StatelessWidget {
   // Список пацієнтів для прикладу
@@ -25,7 +26,6 @@ class MainScreen extends StatelessWidget {
       email: 'john.doe@example.com',
       diagnosis: 'Гіпертонія',
     ),
-    // Додай інших пацієнтів за потреби
   ];
 
   // Список процедур для прикладу
@@ -33,15 +33,15 @@ class MainScreen extends StatelessWidget {
     Procedure(
       procedureName: 'Тест на дихання',
       patientName: 'John Doe',
-      doctorName: 'Др. Сміт', // Додано ім'я лікаря
+      doctorName: 'Др. Сміт',
+      procedureDate: DateTime(2024, 10, 10), // Використання DateTime для дати процедури
       time: '12:00 PM',
-      heartRate: [70], // Передаємо список значень пульсу
-      spo2: [98.0], // Передаємо список значень SpO2
-      respirationRate: [16], // Передаємо список значень дихальної частоти
-      oxygenConcentration: [95.0], // Передаємо список значень кисню
-      carbonDioxideConcentration: [5.0], // Передаємо список значень CO2
+      heartRate: [70],
+      spo2: [98.0],
+      respirationRate: [16],
+      oxygenConcentration: [95.0],
+      carbonDioxideConcentration: [5.0],
     ),
-    // Додай інші процедури за потреби
   ];
 
   @override
@@ -52,7 +52,7 @@ class MainScreen extends StatelessWidget {
           'Patient Management',
           style: GoogleFonts.lato(
             fontSize: 24,
-            color: Colors.white, // Змінити колір тексту на білий
+            color: Colors.white,
           ),
         ),
         backgroundColor: Color(0xFF2F2FAF),
@@ -65,7 +65,6 @@ class MainScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Покращена кнопка пошуку
                 _buildStyledButton(
                   context,
                   label: 'Пошук',
@@ -83,7 +82,6 @@ class MainScreen extends StatelessWidget {
                     );
                   },
                 ),
-                // Покращена кнопка додавання
                 _buildStyledButton(
                   context,
                   label: 'Додати',
@@ -108,7 +106,6 @@ class MainScreen extends StatelessWidget {
               flex: 5,
               child: Row(
                 children: [
-                  // Список пацієнтів
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
@@ -143,7 +140,6 @@ class MainScreen extends StatelessWidget {
                                   title: Text('${patients[index].firstName} ${patients[index].lastName}'),
                                   subtitle: Text('Номер картки: ${patients[index].cardNumber}'),
                                   onTap: () {
-                                    // Відкриваємо екран деталей пацієнта
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -160,7 +156,6 @@ class MainScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(width: 16),
-                  // Список процедур
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
@@ -193,9 +188,12 @@ class MainScreen extends StatelessWidget {
                                 return ListTile(
                                   leading: Icon(Icons.medical_services),
                                   title: Text(procedures[index].procedureName),
-                                  subtitle: Text('Пацієнт: ${procedures[index].patientName}, Лікар: ${procedures[index].doctorName}'), // Додано ім'я лікаря
+                                  subtitle: Text(
+                                    'Пацієнт: ${procedures[index].patientName}, '
+                                        'Дата: ${DateFormat('dd-MM-yyyy').format(procedures[index].procedureDate)}, '
+                                        'Лікар: ${procedures[index].doctorName}',
+                                  ),
                                   onTap: () {
-                                    // Відкриваємо екран деталей процедури
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -220,7 +218,6 @@ class MainScreen extends StatelessWidget {
     );
   }
 
-  // Створення покращених кнопок з градієнтами та стилями
   Widget _buildStyledButton(BuildContext context,
       {required String label,
         required IconData icon,
