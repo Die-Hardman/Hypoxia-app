@@ -25,7 +25,7 @@ class _SearchScreenState extends State<SearchScreen> {
       address: '123 Main St',
       phone: '+123456789',
       email: 'john.doe@example.com',
-      diagnosis: 'Гіпертонія',
+      diagnosis: 'Гіпертонія' ,
     ),
     // Add other patients as needed
   ];
