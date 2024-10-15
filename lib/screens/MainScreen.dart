@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart'; // Для форматування дати
+import 'package:intl/intl.dart';
 
 import '../models/Patient.dart';
 import '../models/Procedure.dart';
@@ -34,7 +34,7 @@ class MainScreen extends StatelessWidget {
       procedureName: 'Тест на дихання',
       patientName: 'John Doe',
       doctorName: 'Др. Сміт',
-      procedureDate: DateTime(2024, 10, 10), // Використання DateTime для дати процедури
+      procedureDate: DateTime(2024, 10, 10),
       time: '12:00 PM',
       heartRate: [70],
       spo2: [98.0],
@@ -43,6 +43,11 @@ class MainScreen extends StatelessWidget {
       carbonDioxideConcentration: [5.0],
     ),
   ];
+
+  void deleteProcedure(Procedure procedure) {
+    // Логіка видалення процедури (приклад)
+    procedures.remove(procedure);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +202,13 @@ class MainScreen extends StatelessWidget {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => ProcedureDetailsScreen(procedure: procedures[index]),
+                                        builder: (context) => ProcedureDetailsScreen(
+                                          procedure: procedures[index],
+                                          onDelete: () {
+                                            deleteProcedure(procedures[index]);
+                                            // Можливо, потрібно оновити стан, якщо використовуєте StatefulWidget
+                                          },
+                                        ),
                                       ),
                                     );
                                   },

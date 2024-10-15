@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/Patient.dart';
 import '../models/Procedure.dart';
 import 'ProcedureDetailsScreen.dart'; // Importing the procedure details screen
+import 'PatientDetailsScreen.dart'; // Importing the patient details screen
 import 'package:google_fonts/google_fonts.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -26,7 +27,7 @@ class _SearchScreenState extends State<SearchScreen> {
       address: '123 Main St',
       phone: '+123456789',
       email: 'john.doe@example.com',
-      diagnosis: 'Гіпертонія' ,
+      diagnosis: 'Гіпертонія',
     ),
     // Add other patients as needed
   ];
@@ -35,13 +36,13 @@ class _SearchScreenState extends State<SearchScreen> {
     Procedure(
       procedureName: 'Тест на дихання',
       patientName: 'John Doe',
-      procedureDate: DateTime.now(), // Оновлене поле
+      procedureDate: DateTime.now(),
       time: '12:00 PM',
-      heartRate: [70, 75, 72], // Список значень пульсу
-      spo2: [98.0, 97.5, 98.2], // Список значень SpO2
-      respirationRate: [16, 15, 14], // Список значень дихальної частоти
-      oxygenConcentration: [95.0, 94.0, 96.0], // Список значень концентрації кисню
-      carbonDioxideConcentration: [5.0, 4.5, 5.2], // Список значень концентрації CO2
+      heartRate: [70, 75, 72],
+      spo2: [98.0, 97.5, 98.2],
+      respirationRate: [16, 15, 14],
+      oxygenConcentration: [95.0, 94.0, 96.0],
+      carbonDioxideConcentration: [5.0, 4.5, 5.2],
       doctorName: 'Dr. Smith',
     ),
     // Add other procedures as needed
@@ -53,8 +54,8 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    filteredPatients = patients; // Initially all patients
-    filteredProcedures = procedures; // Initially all procedures
+    filteredPatients = patients;
+    filteredProcedures = procedures;
   }
 
   void _search(String query) {
@@ -77,11 +78,13 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Пошук',
+        title: Text(
+          'Пошук',
           style: GoogleFonts.lato(
-          fontSize: 24,
-          color: Colors.white,
-        ),),
+            fontSize: 24,
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: Color(0xFF2F2FAF),
       ),
       body: Padding(
@@ -109,7 +112,13 @@ class _SearchScreenState extends State<SearchScreen> {
                       title: Text('${patient.firstName} ${patient.lastName}'),
                       subtitle: Text('Номер картки: ${patient.cardNumber}'),
                       onTap: () {
-                        // Open patient details screen (not implemented in this example)
+                        // Navigate to patient details screen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PatientDetailsScreen(patient: patient),
+                          ),
+                        );
                       },
                     );
                   }).toList(),
@@ -125,8 +134,15 @@ class _SearchScreenState extends State<SearchScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                ProcedureDetailsScreen(procedure: procedure),
+                            builder: (context) => ProcedureDetailsScreen(
+                              procedure: procedure,
+                              onDelete: () {
+                                // Логіка видалення процедури
+                                setState(() {
+                                  filteredProcedures.remove(procedure);
+                                });
+                              },
+                            ),
                           ),
                         );
                       },

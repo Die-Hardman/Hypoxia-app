@@ -6,31 +6,51 @@ import 'package:google_fonts/google_fonts.dart';
 
 class ProcedureDetailsScreen extends StatelessWidget {
   final Procedure procedure;
+  final Function() onDelete; // Функція для обробки видалення процедури
 
-  const ProcedureDetailsScreen({Key? key, required this.procedure}) : super(key: key);
+  const ProcedureDetailsScreen({
+    Key? key,
+    required this.procedure,
+    required this.onDelete, // Додаємо параметр для функції видалення
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final List<int> timeIntervals = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170];
+    final List<int> filteredTimeIntervals = timeIntervals.where((time) => time <= 120).toList();
 
-    // Приклад даних
     final List<int?> heartRates = [70, 72, 75, 73, 74, 76, 78, 79, 80, 82, 85, 84, 86, 88, 87, 89, 90];
     final List<double?> spo2 = [98.0, 97.5, 97.0, 96.8, 96.5, 96.2, 96.0, 95.8, 95.6, 95.4, 95.3, 95.1, 95.0, 94.8, 94.5, 94.3, 94.0];
     final List<int?> respirationRates = [16, 17, 18, 17, 16, 17, 18, 19, 20, 19, 18, 19, 20, 21, 20, 19, 18];
     final List<double?> oxygenConcentrations = [95.0, 94.8, 94.5, 94.3, 94.0, 93.8, 93.6, 93.4, 93.2, 93.0, 92.8, 92.5, 92.3, 92.0, 91.8, 91.5, 91.3];
     final List<double?> co2Concentrations = [5.0, 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 5.9, 6.0, 6.1, 6.2, 6.3, 6.4, 6.5, 6.6];
 
-    // Форматування дати
+    final List<int?> filteredHeartRates = heartRates.take(filteredTimeIntervals.length).toList();
+    final List<double?> filteredSpo2 = spo2.take(filteredTimeIntervals.length).toList();
+    final List<int?> filteredRespirationRates = respirationRates.take(filteredTimeIntervals.length).toList();
+    final List<double?> filteredOxygenConcentrations = oxygenConcentrations.take(filteredTimeIntervals.length).toList();
+    final List<double?> filteredCo2Concentrations = co2Concentrations.take(filteredTimeIntervals.length).toList();
+
     String formattedDate = DateFormat('dd.MM.yyyy').format(procedure.procedureDate);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Деталі Процедури',
+        title: Text(
+          'Деталі Процедури',
           style: GoogleFonts.lato(
-          fontSize: 24,
-          color: Colors.white,
-        ),),
+            fontSize: 24,
+            color: Colors.white,
+          ),
+        ),
         backgroundColor: Color(0xFF2F2FAF),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.delete), // Іконка видалення
+            onPressed: () {
+              _showDeleteConfirmationDialog(context); // Відкриваємо діалог підтвердження
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -49,11 +69,10 @@ class ProcedureDetailsScreen extends StatelessWidget {
               ),
               SizedBox(height: 8),
               Text(
-                'Дата процедури: $formattedDate', // Дата процедури
+                'Дата процедури: $formattedDate',
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 16),
-              // Таблиця з деталями процедури
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
@@ -65,35 +84,30 @@ class ProcedureDetailsScreen extends StatelessWidget {
                     DataColumn(label: Text('Конц O2')),
                     DataColumn(label: Text('Конц CO2')),
                   ],
-                  rows: List<DataRow>.generate(timeIntervals.length, (index) {
+                  rows: List<DataRow>.generate(filteredTimeIntervals.length, (index) {
                     return DataRow(
                       cells: [
-                        DataCell(Text(timeIntervals[index].toString())),
-                        DataCell(Text(heartRates[index]?.toString() ?? 'N/A')),
-                        DataCell(Text(spo2[index]?.toString() ?? 'N/A')),
-                        DataCell(Text(respirationRates[index]?.toString() ?? 'N/A')),
-                        DataCell(Text(oxygenConcentrations[index]?.toString() ?? 'N/A')),
-                        DataCell(Text(co2Concentrations[index]?.toString() ?? 'N/A')),
+                        DataCell(Text(filteredTimeIntervals[index].toString())),
+                        DataCell(Text(filteredHeartRates[index]?.toString() ?? 'N/A')),
+                        DataCell(Text(filteredSpo2[index]?.toString() ?? 'N/A')),
+                        DataCell(Text(filteredRespirationRates[index]?.toString() ?? 'N/A')),
+                        DataCell(Text(filteredOxygenConcentrations[index]?.toString() ?? 'N/A')),
+                        DataCell(Text(filteredCo2Concentrations[index]?.toString() ?? 'N/A')),
                       ],
                     );
                   }),
                 ),
               ),
               SizedBox(height: 32),
-              // Графік для ЧСС
-              buildChart('Графік ЧСС', heartRates, timeIntervals, Colors.red, 100),
+              buildChart('Графік ЧСС', filteredHeartRates, filteredTimeIntervals, Colors.red, 100),
               SizedBox(height: 32),
-              // Графік для SpO2
-              buildChart('Графік SpO2', spo2, timeIntervals, Colors.blue, 100),
+              buildChart('Графік SpO2', filteredSpo2, filteredTimeIntervals, Colors.blue, 100),
               SizedBox(height: 32),
-              // Графік для ЧД
-              buildChart('Графік ЧД', respirationRates, timeIntervals, Colors.green, 50),
+              buildChart('Графік ЧД', filteredRespirationRates, filteredTimeIntervals, Colors.green, 50),
               SizedBox(height: 32),
-              // Графік для концентрації O2
-              buildChart('Графік Концентрації O2', oxygenConcentrations, timeIntervals, Colors.orange, 100),
+              buildChart('Графік Концентрації O2', filteredOxygenConcentrations, filteredTimeIntervals, Colors.orange, 100),
               SizedBox(height: 32),
-              // Графік для концентрації CO2
-              buildChart('Графік Концентрації CO2', co2Concentrations, timeIntervals, Colors.purple, 10),
+              buildChart('Графік Концентрації CO2', filteredCo2Concentrations, filteredTimeIntervals, Colors.purple, 10),
             ],
           ),
         ),
@@ -101,7 +115,35 @@ class ProcedureDetailsScreen extends StatelessWidget {
     );
   }
 
-  // Метод для побудови графіка
+  // Діалог підтвердження видалення
+  void _showDeleteConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Підтвердження видалення'),
+          content: Text('Ви впевнені, що хочете видалити цю процедуру?'),
+          actions: [
+            TextButton(
+              child: Text('Скасувати'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Закриваємо діалог
+              },
+            ),
+            TextButton(
+              child: Text('Видалити'),
+              onPressed: () {
+                onDelete(); // Викликаємо функцію видалення
+                Navigator.of(context).pop(); // Закриваємо діалог
+                Navigator.of(context).pop(); // Повертаємося на попередній екран
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget buildChart(String title, List<dynamic>? dataPoints, List<int> timeIntervals, Color color, double maxY) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
